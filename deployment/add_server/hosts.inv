@@ -1,0 +1,11 @@
+[app]
+34.159.75.179
+
+[proxy]
+34.123.168.89
+
+[app:vars]
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+
+[proxy:vars]
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'

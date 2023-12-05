@@ -1,0 +1,52 @@
+- name: Install unzip
+  apt:
+    name: unzip
+    state: latest
+
+- name: Copy all files 
+  copy:
+    src: "./roles/front/gamehub-frontend.zip"
+    dest: "~/"
+  become_user: "vagrant"
+
+- name: Extract zip files
+  unarchive:
+    src: "/home/vagrant/gamehub-frontend.zip"
+    dest: "~/"
+    remote_src: true
+  become_user: "vagrant"
+  ignore_errors: yes
+
+- name: Create file url.js part 1
+  shell: rm /home/vagrant/gamehub-frontend/src/url.js
+  become_user: "vagrant"
+
+- name: Create file url.js part 2
+  template:
+    src: "url.js"
+    dest: "/home/vagrant/gamehub-frontend/src/url.js"
+  become_user: "vagrant"
+
+- name: Create DockerFile
+  template:
+    src: "Dockerfile"
+    dest: "/home/vagrant/gamehub-frontend/Dockerfile"
+  become_user: "vagrant"
+
+- name: Build FrontEnd Docker Image
+  docker_image:
+    build:
+      path: /home/vagrant/gamehub-frontend
+    name: dockerize-quasar
+    source: build
+
+- name: Start BackEnd
+  docker_container:
+    name: FrontEnd
+    image: dockerize-quasar
+    state: started
+    restart_policy: unless-stopped
+    networks:
+      - name: "Rede"
+    ports:
+      - "80:80"

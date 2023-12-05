@@ -1,0 +1,7 @@
+- name: VM configuration
+  hosts: all
+  become: yes
+  roles:
+    - common
+  tags:
+    - provision

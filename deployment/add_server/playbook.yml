@@ -1,0 +1,24 @@
+
+- name: Docker installation (App)
+  hosts: app
+  become: yes
+  roles:
+    - docker
+  tags:
+    - dockerinstall
+
+- name: Back End install and deploy
+  hosts: app
+  become: yes
+  roles:
+    - app
+  tags:
+    - appinstall
+
+- name: Reverse proxy setup
+  hosts: proxy
+  become: yes
+  roles:
+    - proxy
+  tags:
+    - proxyinstall

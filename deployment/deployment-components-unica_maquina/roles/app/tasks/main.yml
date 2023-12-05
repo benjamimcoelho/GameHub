@@ -1,0 +1,50 @@
+- name: Install unzip, java, maven
+  apt:
+    name: 
+      - unzip
+      - openjdk-18-jre
+      - maven
+    state: latest
+
+- name: Copy all files 
+  copy:
+    src: "./roles/app/Implemetacao.zip"
+    dest: "~/"
+  become_user: "vagrant"
+
+- name: Extract zip files
+  shell: unzip /home/vagrant/Implemetacao.zip
+  become_user: "vagrant"
+  ignore_errors: yes
+
+- name: Create file url.js - Part 1
+  shell: rm /home/vagrant/Implemetacao/src/main/resources/application.properties
+  become_user: "vagrant"
+
+- name: Create file url.js - Part 2
+  template:
+    src: "application.properties"
+    dest: "/home/vagrant/Implemetacao/src/main/resources/application.properties"
+  become_user: "vagrant"
+
+- name: Create JAR file - Part 1
+  shell: mvn package -DskipTests
+  args:
+    chdir: /home/vagrant/Implemetacao
+  become_user: "vagrant"
+
+- name: Create JAR file - Part 2
+  shell: mv /home/vagrant/Implemetacao/target/GameHub-0.0.1-SNAPSHOT.jar ~/
+  become_user: "vagrant"
+
+- name: Create Tables
+  shell: java -jar GameHub-0.0.1-SNAPSHOT.jar --server.port=8080 --deploymentNumber=1 &
+
+- name: wait create tables
+  shell: sleep 60
+
+- name: Povoamento
+  shell: mysql -uroot -pPedro1234 gamehub < /home/vagrant/load_simples.sql
+
+- name: Execute Jar file
+  shell: java -jar GameHub-0.0.1-SNAPSHOT.jar --server.port={{port_app}} --deploymentNumber=0 > logfile.txt &

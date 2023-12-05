@@ -1,0 +1,12 @@
+[app]
+34.175.214.115
+
+[app:vars]
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+
+[front]
+34.175.91.247
+
+[front:vars]
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+

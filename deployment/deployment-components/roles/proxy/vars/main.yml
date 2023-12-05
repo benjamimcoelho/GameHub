@@ -1,0 +1,8 @@
+
+worker_conections: 1024
+balancing_method: least_conn
+
+nginx_hostname : wikijs
+ngix_port : 8000
+http_port : 80
+app_port : 80

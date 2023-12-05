@@ -1,0 +1,64 @@
+- name: Install unzip, java, maven
+  apt:
+    name: 
+      - unzip
+      - openjdk-18-jre
+      - maven
+    state: latest
+
+- name: Copy all files 
+  copy:
+    src: "./roles/app/Implemetacao.zip"
+    dest: "~/"
+  become_user: "vagrant"
+
+- name: Extract zip files
+  shell: unzip /home/vagrant/Implemetacao.zip
+  become_user: "vagrant"
+  ignore_errors: yes
+
+- name: Create file url.js - Part 1
+  shell: rm /home/vagrant/Implemetacao/src/main/resources/application.properties
+  become_user: "vagrant"
+
+- name: Create file url.js - Part 2
+  template:
+    src: "application.properties"
+    dest: "/home/vagrant/Implemetacao/src/main/resources/application.properties"
+  become_user: "vagrant"
+
+- name: Create JAR file - Part 1
+  shell: mvn package -DskipTests
+  args:
+    chdir: /home/vagrant/Implemetacao
+  become_user: "vagrant"
+
+- name: Create JAR file - Part 2
+  shell: mv /home/vagrant/Implemetacao/target/GameHub-0.0.1-SNAPSHOT.jar ~/
+  become_user: "vagrant"
+
+- name: Create DockerFile
+  template:
+    src: "Dockerfile"
+    dest: "~/Dockerfile"
+  become_user: "vagrant"
+
+- name: Build BackEnd Docker Image
+  docker_image:
+    build:
+      path: /home/vagrant
+    name: springio/gs-spring-boot-docker
+    source: build
+
+- name: Start BackEnd
+  docker_container:
+    name: BackEnd
+    image: springio/gs-spring-boot-docker
+    state: started
+    restart_policy: unless-stopped
+    networks:
+      - name: "Rede"
+    ports:
+      - "80:8080"
+    env:
+      TIPOSERVER: "1"

@@ -1,0 +1,31 @@
+- name: Install Mysql packages
+  apt:
+    name: "{{ item }}"
+    state: latest
+  loop: "{{ db_packages }}"
+
+- name: wait data base init
+  shell: sleep 5
+
+- name: Config database
+  shell: echo "sql_mode = \"\"" >> /etc/mysql/mysql.conf.d/mysqld.cnf
+
+- name: restart mysql
+  service:
+    name: mysql
+    state: restarted
+
+- name: Create user 
+  shell: mysql -uroot -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Pedro1234';"
+
+- name: Create schema
+  shell: mysql -uroot -pPedro1234 -e "create schema gamehub;"
+
+- name: wait data base config
+  shell: sleep 2
+
+- name: Create file load_simples.sql
+  template:
+    src: "load_simples.sql"
+    dest: "/home/vagrant/load_simples.sql"
+  become_user: "vagrant"

@@ -1,0 +1,17 @@
+
+- name: Create Script
+  template:
+    src: "analisaRecompensas.py"
+    dest: "~/analisaRecompensas.py"
+
+- name: Install python3
+  apt:
+    name: python3
+    state: latest
+
+- name: Install mysql-connector-python python package
+  pip:
+    name: mysql-connector-python
+
+- name: execute script
+  shell: python3 ~/analisaRecompensas.py &

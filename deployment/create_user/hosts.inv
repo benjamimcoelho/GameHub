@@ -1,0 +1,6 @@
+[users]
+34.175.214.115
+34.175.91.247
+
+[users:vars]
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'

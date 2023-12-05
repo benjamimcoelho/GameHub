@@ -1,0 +1,31 @@
+- name: DataBase install and start and config
+  hosts: app
+  become: yes
+  roles:
+    - db_master
+  tags:
+    - dbmasterinstall
+
+- name: BackEnd install and deploy
+  hosts: app
+  become: yes
+  roles:
+    - app
+  tags:
+    - appinstall
+
+- name: Docker installation
+  hosts: front
+  become: yes
+  roles:
+    - docker
+  tags:
+    - dockerinstall
+
+- name: FrontEnd install and deploy
+  hosts: front
+  become: yes
+  roles:
+    - front
+  tags:
+    - appinstall

@@ -1,0 +1,35 @@
+[dbmaster]
+34.159.109.120
+
+[app1]
+34.91.130.31
+
+[app2]
+34.88.101.103
+
+[proxy]
+34.116.167.251
+
+[front]
+34.65.57.206
+
+[atrRec]
+34.159.109.120
+
+[proxy:vars]
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+
+[dbmaster:vars]
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+
+[app1:vars]
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+
+[app2:vars]
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+
+[front:vars]
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+
+[atrRec:vars]
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'

@@ -1,0 +1,35 @@
+---
+- name: Update system packages
+  apt:
+    update_cache: yes
+    upgrade: no
+
+- name: Install openntpd sudo
+  apt:
+    name: "{{ item }}"
+    state: latest
+  loop: "{{ common_packages }}"
+
+- name: Create a user
+  user:
+    name: "{{ common_username }}"
+    password: "{{ common_password }}"
+    shell: "{{ common_shell }}"
+
+- name: Add user to sudo group
+  user:
+    name: "{{ common_username }}"
+    groups: "{{ common_member_of }}"
+    append: yes
+
+- name: Prepare user for public key authentication
+  authorized_key:
+    user: "{{ common_username }}"
+    key: "{{ common_local_public_key }}"
+
+- name: Make sure OpenNTPD and OpenSSH services are enabled and running
+  service:
+    name: "{{ item }}"
+    enabled: yes
+    state: started
+  loop: "{{ common_services }}"  

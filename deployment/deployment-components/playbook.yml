@@ -1,0 +1,56 @@
+
+- name: Docker installation
+  hosts: all
+  become: yes
+  roles:
+    - docker
+  tags:
+    - dockerinstall
+
+- name: DataBase install and start and config
+  hosts: dbmaster
+  become: yes
+  roles:
+    - db_master
+  tags:
+    - dbmasterinstall
+
+- name: Install component AtribuiRecompensas
+  hosts: atrRec
+  become: yes
+  roles:
+    - atrRe
+  tags:
+    - atrReinstall
+
+- name: BackEnd 1 install and deploy
+  hosts: app1
+  become: yes
+  roles:
+    - app
+  tags:
+    - appinstall
+
+- name: BackEnd 2 install and deploy
+  hosts: app2
+  become: yes
+  roles:
+    - app2
+  tags:
+    - appinstall
+
+- name: Reverse proxy setup
+  hosts: proxy
+  become: yes
+  roles:
+    - proxy
+  tags:
+    - proxyinstall
+
+- name: FrontEnd install and deploy
+  hosts: front
+  become: yes
+  roles:
+    - front
+  tags:
+    - appinstall

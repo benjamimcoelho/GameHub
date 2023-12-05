@@ -1,0 +1,18 @@
+- name: Launch database container
+  docker_container:
+    name: mySQL
+    image: mysql:latest
+    state: started
+    restart_policy: unless-stopped
+    networks:
+      - name: "Rede"
+    ports:
+      - "80:3306"
+    env:
+      MYSQL_ROOT_PASSWORD: Pedro1234
+      MYSQL_DATABASE: gamehub
+      MYSQL_USER: GameHub
+      MYSQL_PASSWORD: GameHub1234
+
+- name: wait data base init
+  shell: sleep 5

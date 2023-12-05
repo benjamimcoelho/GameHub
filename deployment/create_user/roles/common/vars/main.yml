@@ -1,0 +1,14 @@
+---
+#provisioning
+common_packages:
+  - openntpd
+  - sudo
+common_shell: /bin/bash
+common_member_of: sudo
+common_services:
+  - sshd
+  - openntpd
+common_username: vagrant
+common_password: "{{ lookup('file', 'files/hashed_password') }}"
+
+common_local_public_key: "{{ lookup('file', '{{ inventory_dir }}/roles/common/templates/pass') }}"

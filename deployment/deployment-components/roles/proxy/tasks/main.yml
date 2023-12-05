@@ -1,0 +1,23 @@
+- name: Pull NGIN X image
+  docker_image:
+    name: nginx
+    source: pull
+
+- name: Create NGIN X config file
+  template:
+    src: "default.conf"
+    dest: "./default.conf"
+
+- name: Run NGIN X
+  docker_container:
+    name: nginx
+    image: nginx
+    state: started
+    restart_policy: unless-stopped
+    networks:
+      - name: "Rede"
+    volumes:
+      - ./default.conf:/etc/nginx/nginx.conf
+    ports:
+      - "{{ http_port }}:{{ ngix_port }}"
+      - "81:{{ app_port }}"

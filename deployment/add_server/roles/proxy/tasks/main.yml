@@ -1,0 +1,22 @@
+- name: Add new server on reverse proxy configure file
+  shell: sed -i -E "s/upstream wikijs \{/upstream wikijs {\n\tserver {{ item }}:{{ app_port }};/g" ./default.conf
+  loop: "{{ ip_app }}"
+
+- name: Stop running container nginx
+  docker_container:
+    name: nginx
+    state: stopped
+
+- name: Restart nginx
+  docker_container:
+    name: nginx
+    image: nginx
+    state: started
+    restart_policy: unless-stopped
+    networks:
+      - name: "Rede"
+    volumes:
+      - ./default.conf:/etc/nginx/nginx.conf
+    ports:
+      - "{{ http_port }}:{{ ngix_port }}"
+      - "81:{{ app_port }}"
